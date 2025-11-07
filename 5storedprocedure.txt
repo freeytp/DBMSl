@@ -1,0 +1,72 @@
+-- Create database 
+create database student1;
+use student1;
+
+-- Create tables
+CREATE TABLE Stud_Marks (
+    Roll_no INT,
+    Name VARCHAR(50),
+    Total_Marks INT
+);
+
+CREATE TABLE Result (
+    Roll_no INT,
+    Name VARCHAR(50),
+    Class VARCHAR(30)
+);
+
+-- Insert sample data
+INSERT INTO Stud_Marks VALUES 
+(101, 'harsh', 1200),
+(102, 'sagar', 950),
+(103, 'rohan', 860),
+(104, 'nitin', 780),
+(105, 'sharwil', 1400);
+
+--  Create stored function to determine grade
+DELIMITER $$
+
+CREATE FUNCTION get_grade(marks INT) RETURNS VARCHAR(30)
+DETERMINISTIC
+BEGIN
+    DECLARE v_class VARCHAR(30);
+
+    IF marks BETWEEN 990 AND 1500 THEN
+        SET v_class = 'Distinction';
+    ELSEIF marks BETWEEN 900 AND 989 THEN
+        SET v_class = 'First Class';
+    ELSEIF marks BETWEEN 825 AND 899 THEN
+        SET v_class = 'Higher Second Class';
+    ELSE
+        SET v_class = 'Fail';
+    END IF;
+
+    RETURN v_class;
+END$$
+
+DELIMITER ;
+
+DELIMITER $$
+
+CREATE PROCEDURE proc_grade()
+BEGIN
+    -- Clear previous result data to avoid duplicates
+    TRUNCATE TABLE Result;
+
+    -- Insert data in one shot (faster than cursor)
+    INSERT INTO Result (Roll_no, Name, Class)
+    SELECT 
+        Roll_no,
+        Name,
+        get_grade(Total_Marks)  -- call function directly for each row
+    FROM Stud_Marks;
+END$$
+
+DELIMITER ;
+
+--  Call the procedure to populate Result table
+CALL proc_grade();
+
+--  Display tables
+SELECT * FROM Stud_Marks;
+SELECT * FROM Result;
