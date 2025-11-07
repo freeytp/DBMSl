@@ -29,7 +29,7 @@ CREATE TABLE Fine (
 insert into Borrower (Roll_no,name,DateOfIssue,NameOfBook,Status) values
     (101,"aditya",'2025-10-10',"DBMS","I"),
     (102,"pratham",'2025-10-15',"OS","R"),
-    (102,"parth",'2025-10-01',"CN","I"),
+    (103,"parth",'2025-10-01',"CN","I"),
     (104,"sagar",'2025-09-25',"AIML","R");
 
 -- Enable delimiter for procedure
